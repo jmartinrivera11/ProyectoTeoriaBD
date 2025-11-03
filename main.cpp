@@ -1,5 +1,5 @@
-// #include "mainwindow.h"
-#include <QApplication>
+#include <QCoreApplication>
+#include <QDir>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QDebug>
@@ -8,16 +8,18 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
+    QString basePath = QDir(QCoreApplication::applicationDirPath())
+                           .absoluteFilePath("../../ProyectoPresupuestoBD/database/PRESUPUESTO.fdb");
+
     QSqlDatabase db = QSqlDatabase::addDatabase("QIBASE");
-    db.setDatabaseName("PRESUPUESTO.fdb");
+    db.setDatabaseName(basePath);
     db.setUserName("sysdba");
     db.setPassword("masterkey");
 
-    if (!db.open()) {
+    if (!db.open())
         qDebug() << "Error:" << db.lastError().text();
-    } else {
+    else
         qDebug() << "Conexión exitosa.";
-    }
 
     return a.exec();
 }
