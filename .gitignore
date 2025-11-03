@@ -1,63 +1,59 @@
-# ---- Qt Creator ----
-*.user
-*.autosave
-*.pro.user
-*.pro.user.*
-*.qbs.user
-*.qbs.user.*
-*.creator.user
-*.creator.user.*
-*.files
-*.includes
-
-# ---- CMake ----
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-cmake-build-*/
-build*/
-Testing/
+# === Build artifacts (no versionar) ===
+/build/
+/build-*/
+/cmake-build-*/
+/CMakeFiles/
+/CMakeCache.txt
+/_deps/
+/_compile_commands.json
 Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
+makefile
+build.ninja
+.ninja_log
+.ninja_deps
+*_autogen/
 
-# ---- Compiled objects ----
-*.o
+# Objetos / binarios
 *.obj
-*.so
+*.o
 *.a
 *.lib
 *.dll
-*.exe
-*.app
+*.so
 *.dylib
+*.exe
+*.pdb
+*.ilk
+*.exp
+*.idb
 
-# ---- Qt generated ----
-moc_*
-ui_*
-qrc_*
+# === Qt / Creator / qmake ===
+*.user
+*.user.*
+*.pro.user
+CMakeLists.txt.user
+.qt/
+.qmake.stash
 *.qmlc
 *.jsc
+*.qrc.dep
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
 *.qm
 *.qhc
 *.qch
 
-# ---- Logs and misc ----
-*.log
-*.tmp
-*.bak
-*.swp
-*.swo
-*.orig
+# === IDEs ===
+.vscode/
+.idea/
+
+# === MiniAccess: datos locales (no versionar) ===
+*.mad
+
+# (opcional) bases demo temporales
+demo_*.*
+
+# === Sistema ===
 .DS_Store
 Thumbs.db
-
-# ---- Visual Studio (if Qt MSVC kit used) ----
-*.pdb
-*.idb
-*.ilk
-*.sdf
-*.tlog
-*.lastbuildstate
-ipch/
