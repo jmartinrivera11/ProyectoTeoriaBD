@@ -1,0 +1,63 @@
+# ---- Qt Creator ----
+*.user
+*.autosave
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.creator.user
+*.creator.user.*
+*.files
+*.includes
+
+# ---- CMake ----
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake-build-*/
+build*/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# ---- Compiled objects ----
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.app
+*.dylib
+
+# ---- Qt generated ----
+moc_*
+ui_*
+qrc_*
+*.qmlc
+*.jsc
+*.qm
+*.qhc
+*.qch
+
+# ---- Logs and misc ----
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+.DS_Store
+Thumbs.db
+
+# ---- Visual Studio (if Qt MSVC kit used) ----
+*.pdb
+*.idb
+*.ilk
+*.sdf
+*.tlog
+*.lastbuildstate
+ipch/
