@@ -1,9 +1,8 @@
 -- ===========================================================
 --   SCRIPT DE CREACION DE BASE DE DATOS
---   Sistema de Presupuesto Personal
+--   Sistema de Presupuesto Personal (Version Final)
 -- ===========================================================
 
--- Crear tablas principales
 CREATE TABLE Usuario (
     Id_usuario VARCHAR(36) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -87,6 +86,7 @@ CREATE TABLE Presupuesto_detalle (
 CREATE TABLE Obligacion_fija (
     Id_obligacion_fija VARCHAR(36) PRIMARY KEY,
     Id_subcategoria VARCHAR(36),
+    Id_usuario VARCHAR(36),
     nombre VARCHAR(100) NOT NULL,
     descripcion VARCHAR(255),
     monto_mensual DECIMAL(10,2) NOT NULL,
@@ -99,16 +99,8 @@ CREATE TABLE Obligacion_fija (
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modificado_en TIMESTAMP,
     CONSTRAINT fk_obligacion_subcategoria FOREIGN KEY (Id_subcategoria)
-        REFERENCES Subcategoria (Id_subcategoria)
-);
-
-CREATE TABLE ObligacionFija_Usuario (
-    Id_obligacion_fija VARCHAR(36),
-    Id_usuario VARCHAR(36),
-    CONSTRAINT pk_obligacion_usuario PRIMARY KEY (Id_obligacion_fija, Id_usuario),
-    CONSTRAINT fk_ofu_obligacion FOREIGN KEY (Id_obligacion_fija)
-        REFERENCES Obligacion_fija (Id_obligacion_fija),
-    CONSTRAINT fk_ofu_usuario FOREIGN KEY (Id_usuario)
+        REFERENCES Subcategoria (Id_subcategoria),
+    CONSTRAINT fk_obligacion_usuario FOREIGN KEY (Id_usuario)
         REFERENCES Usuario (Id_usuario)
 );
 
