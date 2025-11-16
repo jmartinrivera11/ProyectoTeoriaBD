@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     if (!db.open())
         qDebug() << "Error:" << db.lastError().text();
     else
-        qDebug() << "Conexión exitosa.";
+        qDebug() << "Conexion establecida";
 
     return a.exec();
 }

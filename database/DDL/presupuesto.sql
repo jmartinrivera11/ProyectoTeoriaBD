@@ -1,8 +1,3 @@
--- ===========================================================
---   SCRIPT DE CREACION DE BASE DE DATOS
---   Sistema de Presupuesto Personal (Version Final)
--- ===========================================================
-
 CREATE TABLE Usuario (
     Id_usuario VARCHAR(36) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -155,7 +150,3 @@ CREATE TABLE Meta_ahorro (
     CONSTRAINT fk_meta_subcategoria FOREIGN KEY (Id_subcategoria)
         REFERENCES Subcategoria (Id_subcategoria)
 );
-
--- ===========================================================
---   FIN DEL SCRIPT
--- ===========================================================
