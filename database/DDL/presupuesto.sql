@@ -3,12 +3,12 @@ CREATE TABLE Usuario (
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     correo VARCHAR(150) NOT NULL,
-    fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     salario_mensual_base DECIMAL(12,2) NOT NULL,
     estado VARCHAR(20) NOT NULL,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_usuario PRIMARY KEY (Id_usuario),
     CONSTRAINT uq_usuario_correo UNIQUE (correo),
@@ -23,20 +23,18 @@ CREATE TABLE Presupuesto (
     mes_inicio INT NOT NULL,
     anio_fin INT NOT NULL,
     mes_fin INT NOT NULL,
-    total_ingresos DECIMAL(12,2) NOT NULL DEFAULT 0,
-    total_gastos DECIMAL(12,2) NOT NULL DEFAULT 0,
-    total_ahorro DECIMAL(12,2) NOT NULL DEFAULT 0,
-    fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    total_ingresos DECIMAL(12,2) DEFAULT 0 NOT NULL,
+    total_gastos DECIMAL(12,2) DEFAULT 0 NOT NULL,
+    total_ahorro DECIMAL(12,2) DEFAULT 0 NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     estado VARCHAR(20) NOT NULL,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_presupuesto PRIMARY KEY (Id_presupuesto),
     CONSTRAINT fk_presupuesto_usuario FOREIGN KEY (Id_usuario)
-        REFERENCES Usuario (Id_usuario)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Usuario (Id_usuario),
     CONSTRAINT ck_presupuesto_mes_inicio CHECK (mes_inicio BETWEEN 1 AND 12),
     CONSTRAINT ck_presupuesto_mes_fin CHECK (mes_fin BETWEEN 1 AND 12),
     CONSTRAINT ck_presupuesto_estado CHECK (estado IN ('activo', 'cerrado', 'borrador')),
@@ -53,7 +51,7 @@ CREATE TABLE Categoria (
     orden INT,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_categoria PRIMARY KEY (Id_categoria),
     CONSTRAINT ck_categoria_tipo CHECK (tipo IN ('ingreso', 'gasto', 'ahorro'))
@@ -64,17 +62,15 @@ CREATE TABLE Subcategoria (
     Id_categoria VARCHAR(36) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     descripcion VARCHAR(255),
-    activa BOOLEAN NOT NULL DEFAULT TRUE,
-    es_defecto BOOLEAN NOT NULL DEFAULT FALSE,
+    activa BOOLEAN DEFAULT TRUE NOT NULL,
+    es_defecto BOOLEAN DEFAULT FALSE NOT NULL,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_subcategoria PRIMARY KEY (Id_subcategoria),
     CONSTRAINT fk_subcategoria_categoria FOREIGN KEY (Id_categoria)
         REFERENCES Categoria (Id_categoria)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE Presupuesto_detalle (
@@ -85,17 +81,13 @@ CREATE TABLE Presupuesto_detalle (
     observacion VARCHAR(255),
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_presupuesto_detalle PRIMARY KEY (Id_presupuesto_detalle),
     CONSTRAINT fk_detalle_presupuesto FOREIGN KEY (Id_presupuesto)
-        REFERENCES Presupuesto (Id_presupuesto)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+        REFERENCES Presupuesto (Id_presupuesto),
     CONSTRAINT fk_detalle_subcategoria FOREIGN KEY (Id_subcategoria)
-        REFERENCES Subcategoria (Id_subcategoria)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Subcategoria (Id_subcategoria),
     CONSTRAINT ck_detalle_monto CHECK (monto_mensual >= 0)
 );
 
@@ -107,22 +99,18 @@ CREATE TABLE Obligacion_fija (
     descripcion VARCHAR(255),
     monto_mensual DECIMAL(12,2) NOT NULL,
     dia_mes INT NOT NULL,
-    vigente BOOLEAN NOT NULL DEFAULT TRUE,
+    vigente BOOLEAN DEFAULT TRUE NOT NULL,
     fecha_inicio TIMESTAMP NOT NULL,
     fecha_fin TIMESTAMP,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_obligacion_fija PRIMARY KEY (Id_obligacion_fija),
     CONSTRAINT fk_obligacion_subcategoria FOREIGN KEY (Id_subcategoria)
-        REFERENCES Subcategoria (Id_subcategoria)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Subcategoria (Id_subcategoria),
     CONSTRAINT fk_obligacion_usuario FOREIGN KEY (Id_usuario)
-        REFERENCES Usuario (Id_usuario)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Usuario (Id_usuario),
     CONSTRAINT ck_obligacion_dia CHECK (dia_mes BETWEEN 1 AND 31),
     CONSTRAINT ck_obligacion_monto CHECK (monto_mensual >= 0)
 );
@@ -142,28 +130,21 @@ CREATE TABLE Transaccion (
     metodo_pago VARCHAR(50),
     numero_factura VARCHAR(50),
     observaciones VARCHAR(255),
-    fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_transaccion PRIMARY KEY (Id_transaccion),
     CONSTRAINT fk_trans_usuario FOREIGN KEY (Id_usuario)
-        REFERENCES Usuario (Id_usuario)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Usuario (Id_usuario),
     CONSTRAINT fk_trans_presupuesto FOREIGN KEY (Id_presupuesto)
-        REFERENCES Presupuesto (Id_presupuesto)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Presupuesto (Id_presupuesto),
     CONSTRAINT fk_trans_subcategoria FOREIGN KEY (Id_subcategoria)
-        REFERENCES Subcategoria (Id_subcategoria)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Subcategoria (Id_subcategoria),
     CONSTRAINT fk_trans_obligacion FOREIGN KEY (Id_obligacion_fija)
         REFERENCES Obligacion_fija (Id_obligacion_fija)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
+        ON DELETE SET NULL,
     CONSTRAINT ck_trans_mes CHECK (mes BETWEEN 1 AND 12),
     CONSTRAINT ck_trans_monto CHECK (monto >= 0),
     CONSTRAINT ck_trans_tipo CHECK (tipo IN ('ingreso', 'gasto', 'ahorro'))
@@ -176,24 +157,20 @@ CREATE TABLE Meta_ahorro (
     nombre VARCHAR(100) NOT NULL,
     descripcion VARCHAR(255),
     monto_total DECIMAL(12,2) NOT NULL,
-    monto_ahorrado DECIMAL(12,2) NOT NULL DEFAULT 0,
+    monto_ahorrado DECIMAL(12,2) DEFAULT 0 NOT NULL,
     fecha_inicio TIMESTAMP NOT NULL,
     fecha_objetivo TIMESTAMP NOT NULL,
     prioridad VARCHAR(20) NOT NULL,
     estado VARCHAR(20) NOT NULL,
     creado_por VARCHAR(50) NOT NULL,
     modificado_por VARCHAR(50),
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modificado_en TIMESTAMP,
     CONSTRAINT pk_meta_ahorro PRIMARY KEY (Id_meta_ahorro),
     CONSTRAINT fk_meta_usuario FOREIGN KEY (Id_usuario)
-        REFERENCES Usuario (Id_usuario)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Usuario (Id_usuario),
     CONSTRAINT fk_meta_subcategoria FOREIGN KEY (Id_subcategoria)
-        REFERENCES Subcategoria (Id_subcategoria)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE,
+        REFERENCES Subcategoria (Id_subcategoria),
     CONSTRAINT ck_meta_monto_total CHECK (monto_total > 0),
     CONSTRAINT ck_meta_monto_ahorrado CHECK (monto_ahorrado >= 0),
     CONSTRAINT ck_meta_prioridad CHECK (prioridad IN ('alta','media','baja')),
