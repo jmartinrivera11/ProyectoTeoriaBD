@@ -1,12 +1,6 @@
 SET TERM ^ ;
 
-------------------------------------------------------------------------
--- 1) Registrar transacción con lógica de negocio
---    - Inserta la transacción
---    - Actualiza totales del presupuesto
---    - (Opcional) puede ser llamada por la capa de aplicación cuando ya
---      validó tipo, fechas, etc. Aquí se garantizan los totales.
-------------------------------------------------------------------------
+-- 1) Registrar transaccion
 CREATE OR ALTER PROCEDURE sp_registrar_transaccion_negocio (
     p_id_transaccion     VARCHAR(36),
     p_id_usuario         VARCHAR(36),
@@ -30,7 +24,6 @@ DECLARE VARIABLE v_total_ingresos DECIMAL(12,2);
 DECLARE VARIABLE v_total_gastos   DECIMAL(12,2);
 DECLARE VARIABLE v_total_ahorro   DECIMAL(12,2);
 BEGIN
-  -- Verificar que el presupuesto está activo
   SELECT estado
     FROM Presupuesto
    WHERE Id_presupuesto = :p_id_presupuesto
@@ -42,7 +35,6 @@ BEGIN
   IF (v_estado_presupuesto <> 'activo') THEN
     EXIT;
 
-  -- Insertar la transacción
   INSERT INTO Transaccion (
       Id_transaccion,
       Id_usuario,
@@ -78,7 +70,6 @@ BEGIN
       :p_creado_por
   );
 
-  -- Recalcular totales del presupuesto después de la inserción
   v_total_ingresos = 0;
   v_total_gastos   = 0;
   v_total_ahorro   = 0;
@@ -101,10 +92,7 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
 -- 2) Recalcular totales de un presupuesto desde cero
---    - Útil para corrección o mantenimiento de datos
-------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_recalcular_totales_presupuesto (
     p_id_presupuesto VARCHAR(36)
 )
@@ -135,18 +123,13 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
 -- 3) Cerrar presupuesto
---    - Cambia estado a 'cerrado'
---    - Recalcula totales antes de cerrar
-------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_cerrar_presupuesto (
     p_id_presupuesto VARCHAR(36),
     p_modificado_por VARCHAR(50)
 )
 AS
 BEGIN
-  -- Recalcular totales antes de cerrar
   EXECUTE PROCEDURE sp_recalcular_totales_presupuesto(:p_id_presupuesto);
 
   UPDATE Presupuesto
@@ -157,10 +140,7 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
 -- 4) Reabrir presupuesto
---    - Cambia estado a 'activo' si estaba 'cerrado'
-------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_reabrir_presupuesto (
     p_id_presupuesto VARCHAR(36),
     p_modificado_por VARCHAR(50)
@@ -184,11 +164,7 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
--- 5) Crear un nuevo presupuesto copiando otro (plantilla)
---    - Copia cabecera (con nuevo período)
---    - Copia detalle de categorías / montos
-------------------------------------------------------------------------
+-- 5) Crear un nuevo presupuesto copiando otro
 CREATE OR ALTER PROCEDURE sp_crear_presupuesto_desde_anterior (
     p_id_presupuesto_origen  VARCHAR(36),
     p_id_presupuesto_nuevo   VARCHAR(36),
@@ -207,7 +183,6 @@ DECLARE VARIABLE v_id_subcategoria VARCHAR(36);
 DECLARE VARIABLE v_monto_mensual  DECIMAL(12,2);
 DECLARE VARIABLE v_observacion    VARCHAR(255);
 BEGIN
-  -- Traer cabecera del presupuesto origen
   SELECT Id_usuario,
          nombre,
          estado
@@ -220,7 +195,6 @@ BEGIN
   IF (v_id_usuario IS NULL) THEN
     EXIT;
 
-  -- Insertar nuevo presupuesto como 'borrador'
   INSERT INTO Presupuesto (
       Id_presupuesto,
       Id_usuario,
@@ -248,7 +222,6 @@ BEGIN
       :p_creado_por
   );
 
-  -- Copiar detalle (Presupuesto_detalle)
   FOR
     SELECT Id_subcategoria,
            monto_mensual,
@@ -260,7 +233,7 @@ BEGIN
          :v_observacion
   DO
   BEGIN
-    v_id_detalle = UUID_TO_CHAR(GEN_UUID()); -- Firebird 3+: genera un nuevo ID
+    v_id_detalle = UUID_TO_CHAR(GEN_UUID());
 
     INSERT INTO Presupuesto_detalle (
         Id_presupuesto_detalle,
@@ -282,11 +255,7 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
 -- 6) Aplicar aporte a una meta de ahorro
---    - Suma al monto_ahorrado
---    - Si se alcanza o supera el monto_total, cambia estado a 'completada'
-------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_aplicar_aporte_meta (
     p_id_meta_ahorro VARCHAR(36),
     p_monto_aporte   DECIMAL(12,2),
@@ -323,10 +292,7 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
 -- 7) Generar resumen mensual por usuario
---    - Devuelve ingresos, gastos y ahorro por año/mes
-------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_generar_resumen_mensual_usuario (
     p_id_usuario VARCHAR(36)
 )
@@ -364,10 +330,7 @@ BEGIN
 END^
 
 
-------------------------------------------------------------------------
 -- 8) Actualizar vigencia de obligaciones fijas
---    - Marca como no vigentes las obligaciones con fecha_fin < hoy
-------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_actualizar_vigencia_obligaciones
 AS
 BEGIN
