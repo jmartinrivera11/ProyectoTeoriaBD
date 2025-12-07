@@ -13,15 +13,15 @@ BEGIN
     SELECT COALESCE(SUM(monto), 0)
     FROM Transaccion
     WHERE Id_subcategoria = :p_id_subcategoria
-      AND anio =: p_anio
-      AND mes =: p_mes
+      AND anio = :p_anio
+      AND mes = :p_mes
       AND tipo = 'gasto'
-    INTO : v_total;
+    INTO :v_total;
 
     RETURN v_total;
 END^
 
--- 2. fn_calcular_porcentaje_ejecutado
+-- 2.  fn_calcular_porcentaje_ejecutado
 CREATE OR ALTER FUNCTION fn_calcular_porcentaje_ejecutado(
     p_id_subcategoria VARCHAR(36),
     p_id_presupuesto VARCHAR(36),
@@ -39,8 +39,8 @@ BEGIN
     -- Obtener presupuestado
     SELECT monto_mensual
     FROM Presupuesto_detalle
-    WHERE Id_presupuesto =: p_id_presupuesto
-      AND Id_subcategoria =: p_id_subcategoria
+    WHERE Id_presupuesto = :p_id_presupuesto
+      AND Id_subcategoria = :p_id_subcategoria
     INTO :v_presupuestado;
 
     IF (v_presupuestado IS NULL OR v_presupuestado = 0) THEN
@@ -49,7 +49,7 @@ BEGIN
     RETURN (v_ejecutado / v_presupuestado) * 100;
 END^
 
--- 3. fn_obtener_balance_subcategoria
+-- 3.  fn_obtener_balance_subcategoria
 CREATE OR ALTER FUNCTION fn_obtener_balance_subcategoria(
     p_id_presupuesto VARCHAR(36),
     p_id_subcategoria VARCHAR(36),
@@ -65,8 +65,8 @@ BEGIN
 
     SELECT monto_mensual
     FROM Presupuesto_detalle
-    WHERE Id_presupuesto =: p_id_presupuesto
-      AND Id_subcategoria =: p_id_subcategoria
+    WHERE Id_presupuesto = :p_id_presupuesto
+      AND Id_subcategoria = :p_id_subcategoria
     INTO :v_presupuestado;
 
     RETURN COALESCE(v_presupuestado, 0) - v_ejecutado;
@@ -86,8 +86,8 @@ BEGIN
     SELECT COALESCE(SUM(pd.monto_mensual), 0)
     FROM Presupuesto_detalle pd
     JOIN Subcategoria s ON pd.Id_subcategoria = s.Id_subcategoria
-    WHERE s.Id_categoria =: p_id_categoria
-      AND pd.Id_presupuesto =: p_id_presupuesto
+    WHERE s.Id_categoria = :p_id_categoria
+      AND pd. Id_presupuesto = :p_id_presupuesto
     INTO :v_total;
 
     RETURN v_total;
@@ -106,9 +106,9 @@ BEGIN
     SELECT COALESCE(SUM(t.monto), 0)
     FROM Transaccion t
     JOIN Subcategoria s ON t.Id_subcategoria = s.Id_subcategoria
-    WHERE s.Id_categoria =: p_id_categoria
-      AND t.anio =: p_anio
-      AND t.mes =: p_mes
+    WHERE s.Id_categoria = :p_id_categoria
+      AND t.anio = :p_anio
+      AND t.mes = :p_mes
       AND t.tipo = 'gasto'
     INTO :v_total;
 
@@ -127,7 +127,7 @@ DECLARE VARIABLE v_hoy DATE;
 DECLARE VARIABLE v_anio INTEGER;
 DECLARE VARIABLE v_mes INTEGER;
 BEGIN
-    SELECT dia_mes FROM Obligacion_fija WHERE Id_obligacion_fija =: p_id_obligacion INTO :v_dia_mes;
+    SELECT dia_mes FROM Obligacion_fija WHERE Id_obligacion_fija = :p_id_obligacion INTO :v_dia_mes;
     
     IF (v_dia_mes IS NULL) THEN RETURN NULL;
 
@@ -150,12 +150,12 @@ BEGIN
     RETURN v_fecha_vencimiento - v_hoy;
 END^
 
--- 7. fn_validar_vigencia_presupuesto
+-- 7.  fn_validar_vigencia_presupuesto
 CREATE OR ALTER FUNCTION fn_validar_vigencia_presupuesto(
     p_fecha TIMESTAMP,
     p_id_presupuesto VARCHAR(36)
 )
-RETURNS SMALLINT -- Boolean 0/1
+RETURNS SMALLINT
 AS
 DECLARE VARIABLE v_anio_inicio INTEGER;
 DECLARE VARIABLE v_mes_inicio INTEGER;
@@ -167,7 +167,7 @@ DECLARE VARIABLE v_fecha_check DATE;
 BEGIN
     SELECT anio_inicio, mes_inicio, anio_fin, mes_fin
     FROM Presupuesto
-    WHERE Id_presupuesto =: p_id_presupuesto
+    WHERE Id_presupuesto = :p_id_presupuesto
     INTO :v_anio_inicio, :v_mes_inicio, :v_anio_fin, :v_mes_fin;
 
     v_fecha_inicio = CAST(:v_anio_inicio || '-' || COALESCE(:v_mes_inicio, 1) || '-01' AS DATE);
@@ -194,7 +194,7 @@ DECLARE VARIABLE v_id_categoria VARCHAR(36);
 BEGIN
     SELECT Id_categoria
     FROM Subcategoria
-    WHERE Id_subcategoria =: p_id_subcategoria
+    WHERE Id_subcategoria = :p_id_subcategoria
     INTO :v_id_categoria;
 
     RETURN v_id_categoria;
@@ -252,21 +252,12 @@ DECLARE VARIABLE v_fecha_limite DATE;
 BEGIN
     v_fecha_limite = DATEADD(-:p_cantidad_meses MONTH TO CURRENT_DATE);
 
-    SELECT COALESCE(AVG(monto), 0) 
-    -- SumaTotal / N para promedio mensual.
-    FROM Transaccion
-    WHERE Id_usuario =: p_id_usuario
-      AND Id_subcategoria =: p_id_subcategoria
-      AND fecha >=: v_fecha_limite
-      AND tipo = 'gasto'
-    INTO :v_total;
-
-    -- Corrección: Calcular suma total y dividir por N
+    -- Calcular suma total y dividir por N
     SELECT COALESCE(SUM(monto), 0)
     FROM Transaccion
-    WHERE Id_usuario =: p_id_usuario
-      AND Id_subcategoria =: p_id_subcategoria
-      AND fecha >=: v_fecha_limite
+    WHERE Id_usuario = :p_id_usuario
+      AND Id_subcategoria = :p_id_subcategoria
+      AND fecha >= :v_fecha_limite
       AND tipo = 'gasto'
     INTO :v_total;
 
