@@ -1,25 +1,17 @@
 #include <QCoreApplication>
 #include <QDir>
-#include <QSqlDatabase>
-#include <QSqlError>
 #include <QDebug>
+#include "../database/DBManager.h"
+#include <QUuid>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
-
     QString basePath = QDir(QCoreApplication::applicationDirPath())
                            .absoluteFilePath("../../ProyectoPresupuestoBD/database/PRESUPUESTO.fdb");
-
-    QSqlDatabase db = QSqlDatabase::addDatabase("QIBASE");
-    db.setDatabaseName(basePath);
-    db.setUserName("sysdba");
-    db.setPassword("masterkey");
-
-    if (!db.open())
-        qDebug() << "Error:" << db.lastError().text();
-    else
-        qDebug() << "Conexion establecida";
-
+    auto& dbManager = DatabaseManager::instance();
+    if (!dbManager.open(basePath)) {
+        qDebug() << "No se pudo abrir la base de datos";
+        return -1;
+    }
     return a.exec();
 }

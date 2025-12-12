@@ -21,6 +21,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         backend/src/app/main.cpp
+        backend/src/database/DBManager.cpp backend/src/database/DBManager.h
+        backend/src/dao/UsuarioDAO.cpp backend/src/dao/UsuarioDAO.h
+        backend/src/models/Usuario.h
+        backend/src/dao/SubcategoriaDAO.cpp backend/src/dao/SubcategoriaDAO.h backend/src/dao/CategoriaDAO.cpp backend/src/dao/CategoriaDAO.h
+        backend/src/models/Categoria.h backend/src/models/MetaAhorro.h backend/src/models/ObligacionFija.h backend/src/models/Presupuesto.h backend/src/models/PresupuestoDetalle.h backend/src/models/Subcategoria.h backend/src/models/Transaccion.h
+        backend/src/dao/TransaccionDAO.cpp backend/src/dao/TransaccionDAO.h backend/src/dao/MetaAhorroDAO.cpp backend/src/dao/MetaAhorroDAO.h backend/src/dao/ObligacionFijaDAO.cpp backend/src/dao/ObligacionFijaDAO.h backend/src/dao/PresupuestoDetalleDAO.cpp backend/src/dao/PresupuestoDetalleDAO.h backend/src/dao/PresupuestoDAO.cpp backend/src/dao/PresupuestoDAO.h
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ProyectoPresupuestoBD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
