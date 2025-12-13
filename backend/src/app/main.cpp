@@ -1,17 +1,21 @@
-#include <QCoreApplication>
+#include <QApplication>
 #include <QDir>
-#include <QDebug>
+#include <QMessageBox>
 #include "../database/DBManager.h"
-#include <QUuid>
+#include "../../../frontend/src/gui/MainWindow.h"
 
 int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
     QString basePath = QDir(QCoreApplication::applicationDirPath())
                            .absoluteFilePath("../../ProyectoPresupuestoBD/database/PRESUPUESTO.fdb");
+
     auto& dbManager = DatabaseManager::instance();
     if (!dbManager.open(basePath)) {
-        qDebug() << "No se pudo abrir la base de datos";
+        QMessageBox::critical(nullptr, "BD", "No se pudo abrir la base de datos.");
         return -1;
     }
+
+    MainWindow w;
+    w.show();
     return a.exec();
 }

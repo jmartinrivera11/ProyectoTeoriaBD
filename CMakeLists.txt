@@ -27,6 +27,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         backend/src/dao/SubcategoriaDAO.cpp backend/src/dao/SubcategoriaDAO.h backend/src/dao/CategoriaDAO.cpp backend/src/dao/CategoriaDAO.h
         backend/src/models/Categoria.h backend/src/models/MetaAhorro.h backend/src/models/ObligacionFija.h backend/src/models/Presupuesto.h backend/src/models/PresupuestoDetalle.h backend/src/models/Subcategoria.h backend/src/models/Transaccion.h
         backend/src/dao/TransaccionDAO.cpp backend/src/dao/TransaccionDAO.h backend/src/dao/MetaAhorroDAO.cpp backend/src/dao/MetaAhorroDAO.h backend/src/dao/ObligacionFijaDAO.cpp backend/src/dao/ObligacionFijaDAO.h backend/src/dao/PresupuestoDetalleDAO.cpp backend/src/dao/PresupuestoDetalleDAO.h backend/src/dao/PresupuestoDAO.cpp backend/src/dao/PresupuestoDAO.h
+        frontend/src/gui/MainWindow.cpp frontend/src/gui/MainWindow.h frontend/src/gui/UsuarioDialog.cpp frontend/src/gui/UsuarioDialog.h frontend/src/gui/UsuarioWidget.cpp frontend/src/gui/UsuarioWidget.h
+        frontend/src/gui/CategoriaSubcategoriaWidget.cpp frontend/src/gui/CategoriaSubcategoriaWidget.h frontend/src/gui/SubcategoriaDialog.cpp frontend/src/gui/SubcategoriaDialog.h frontend/src/gui/CategoriaDialog.cpp frontend/src/gui/CategoriaDialog.h
+        frontend/src/gui/PresupuestoWidget.cpp frontend/src/gui/PresupuestoWidget.h frontend/src/gui/PresupuestoDetalleDialog.cpp frontend/src/gui/PresupuestoDetalleDialog.h frontend/src/gui/PresupuestoDialog.cpp frontend/src/gui/PresupuestoDialog.h
+        frontend/src/gui/TransaccionWidget.cpp frontend/src/gui/TransaccionWidget.h frontend/src/gui/TransaccionDialog.cpp frontend/src/gui/TransaccionDialog.h
+        frontend/src/gui/MetaAhorroWidget.cpp frontend/src/gui/MetaAhorroWidget.h frontend/src/gui/MetaAhorroDialog.cpp frontend/src/gui/MetaAhorroDialog.h
+        frontend/src/gui/ObligacionFijaWidget.cpp frontend/src/gui/ObligacionFijaWidget.h frontend/src/gui/ObligacionFijaDialog.cpp frontend/src/gui/ObligacionFijaDialog.h
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ProyectoPresupuestoBD APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

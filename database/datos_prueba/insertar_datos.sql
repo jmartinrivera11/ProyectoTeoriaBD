@@ -8,9 +8,9 @@ INSERT INTO Usuario (
     creado_por
 ) VALUES (
     'USR-0001',
-    'Juan',
-    'Perez',
-    'juan.perez@example.com',
+    'Pedro',
+    'Gonzalez',
+    'pedro.gonzalez@example.com',
     35000.00,
     'activo',
     'seed'
